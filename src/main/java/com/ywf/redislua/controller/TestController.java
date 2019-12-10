@@ -1,6 +1,7 @@
 package com.ywf.redislua.controller;
 
 import com.ywf.redislua.util.RedisLockUtil;
+import com.ywf.redislua.util.SecKillUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,9 @@ public class TestController {
 
     @Autowired
     private RedisLockUtil redisLockUtil;
+
+    @Autowired
+    private SecKillUtil secKillUtil;
 
     @GetMapping("/test")
     public void test(){
@@ -53,5 +57,13 @@ public class TestController {
             return "unLock success";
         }
         return "fail unLock";
+    }
+
+    @RequestMapping("/testSecKill")
+    public String testSecKill(@RequestParam String goodKey, @RequestParam int buyNum) {
+        if (secKillUtil.doSecKill(goodKey, buyNum)) {
+            return "secKill success";
+        }
+        return "fail secKill";
     }
 }
