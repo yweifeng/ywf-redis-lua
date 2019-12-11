@@ -1,5 +1,6 @@
 package com.ywf.redislua.controller;
 
+import com.ywf.redislua.util.DistributedIdUtil;
 import com.ywf.redislua.util.RedisLockUtil;
 import com.ywf.redislua.util.SecKillUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,20 @@ public class TestController {
     @Autowired
     private SecKillUtil secKillUtil;
 
+    @Autowired
+    private DistributedIdUtil distributedIdUtil;
+
     @GetMapping("/test")
-    public void test(){
+    public void test() {
         System.out.println(redisTemplate.hasKey("name"));
-        redisTemplate.opsForValue().set("name","wyp");
+        redisTemplate.opsForValue().set("name", "wyp");
         String name = (String) redisTemplate.opsForValue().get("name");
         System.out.println(name);
     }
 
     /**
      * 加锁
+     *
      * @param key
      * @param requestId
      */
@@ -47,6 +52,7 @@ public class TestController {
 
     /**
      * 解锁
+     *
      * @param key
      * @param requestId
      * @return
@@ -65,5 +71,10 @@ public class TestController {
             return "secKill success";
         }
         return "fail secKill";
+    }
+
+    @RequestMapping("/testGeneratorId")
+    public String testGeneratorId(@RequestParam String key) {
+        return distributedIdUtil.generateId(key);
     }
 }
